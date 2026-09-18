@@ -6,6 +6,10 @@ name: E2E (real DeepSeek API)
 # https://api.deepseek.com (DEEPSEEK_BASE_URL is pinned to it explicitly so a
 # stray repo-root .env can't redirect the run).
 #
+# Auto triggers (push / pull_request / schedule) are disabled to stop repeated
+# failure notifications. Re-enable those `on:` events when the secret/quota is
+# healthy again. Manual runs remain available via workflow_dispatch.
+#
 # pull_request IS a trigger, but GitHub withholds repo secrets from BOTH forked
 # PRs and Dependabot PRs (the latter are same-repo, fork==false, but still
 # keyless). The job-level `if:` below skips the whole job for those untrusted
@@ -29,12 +33,6 @@ name: E2E (real DeepSeek API)
 # push/pull_request/workflow_dispatch act as backstops.
 on:
   workflow_dispatch:
-  push:
-    branches: [main, master]
-  pull_request:
-  schedule:
-    # 00:17 UTC nightly = 08:17 Asia/Shanghai — off the top-of-hour cron stampede.
-    - cron: '17 0 * * *'
 
 # Cancel a superseded PR run (it is on a stale commit); never cancel a
 # push/schedule run — it is already producing the post-merge/nightly signal.
